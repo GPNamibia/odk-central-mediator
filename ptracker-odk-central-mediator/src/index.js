@@ -66,7 +66,6 @@ app.all('*', async(req, res) => {
 
 //Server PORT
 db.sequelize.sync().then((req) => {
-    ptrackerData.getPtrackerdata()
     app.listen(privateConfig.appConfig.PORT, (err) => {
         if (err) console.log(`Error: ${err}`)
         console.log(`${privateConfig.appConfig.mediatorName}  listening on port ${privateConfig.appConfig.PORT}...  \n`);
