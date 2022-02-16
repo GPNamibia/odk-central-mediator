@@ -13,43 +13,43 @@ async function getPtrackerdata() {
                 console.log(`Succesfully ✅ Retrived ANC Submission Data\n`)
                 return resolve(res)
             })
-            .catch(err => { return reject(err) })
+            .catch((err) => { return reject(err) })
 
         await stag_odk_delivery_infant.getDeliveryInfantSubmissionData()
             .then(async(res) => {
                 console.log(`Succesfully ✅ Retrived DELIVERY INFANT Submission Data\n`)
                 return resolve(res)
             })
-            .catch(err => { return reject(err) })
+            .catch((err) => { return reject(err) })
 
         await stag_odk_delivery_infant_info.getDeliveryInfantInfoSubmissionData()
             .then(async(res) => {
                 console.log(`Succesfully ✅ Retrived DELIVERY INFANT INFO Submission Data\n`)
                 return resolve(res)
             })
-            .catch(err => { return reject(err) })
+            .catch((err) => { return reject(err) })
 
         await stag_odk_delivery.getDeliverySubmissionData()
             .then(async(res) => {
                 console.log(`Succesfully ✅ Retrived DELIVERY Submission Data\n`)
                 return resolve(res)
             })
-            .catch(err => { return reject(err) })
+            .catch((err) => { return reject(err) })
 
         await stag_odk_pnc_infant.getPncInfantSubmissionData()
             .then(async(res) => {
                 console.log(`Succesfully ✅ Retrived PNC INFANT Submission Data\n`)
                 return resolve(res)
             })
-            .catch(err => { return reject(err) })
+            .catch((err) => { return reject(err) })
 
         await stag_odk_pnc_mother.getPncMotherSubmissionData()
             .then(async(res) => {
                 console.log(`Succesfully ✅ Retrived PNC MOTHER Submission Data\n`)
                 return resolve(res)
             })
-            .catch(err => { return reject(err) })
-    })
+            .catch((err) => { return reject(err) })
+    }).catch(err => console.error(err));
 }
 
 module.exports = {

@@ -69,5 +69,6 @@ volumes:
   mongo-config-db:
 networks:
   default:
-    external:
-      name: openHIM
+    name: openHIM
+    external: true
+      

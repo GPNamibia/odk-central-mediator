@@ -8,50 +8,50 @@ const cron = require("node-cron");
 const app = express();
 
 // OpenHIM
-const { registerMediator, activateHeartbeat, fetchConfig } = require('openhim-mediator-utils');
-let queryParams;
-const openhimVars = privateConfig.openhimConfig;
-const openhimConfig = {
-    username: openhimVars.username,
-    password: openhimVars.password,
-    apiURL: openhimVars.apiURL,
-    trustSelfSigned: true,
-    urn: mediatorConfig.urn
-}
-const emitter = activateHeartbeat(openhimConfig);
+// const { registerMediator, activateHeartbeat, fetchConfig } = require('openhim-mediator-utils');
+// let queryParams;
+// const openhimVars = privateConfig.openhimConfig;
+// const openhimConfig = {
+//     username: openhimVars.username,
+//     password: openhimVars.password,
+//     apiURL: openhimVars.apiURL,
+//     trustSelfSigned: true,
+//     urn: mediatorConfig.urn
+// }
+// const emitter = activateHeartbeat(openhimConfig);
 
-registerMediator(openhimConfig, mediatorConfig, err => {
-    if (err) {
-        throw new Error(`Failed to register mediator. Check your Config. ${err}`)
-    }
-});
+// registerMediator(openhimConfig, mediatorConfig, err => {
+//     if (err) {
+//         throw new Error(`Failed to register mediator. Check your Config. ${err}`)
+//     }
+// });
 
-fetchConfig(openhimConfig, (err, initialConfig) => {
-    if (err) {
-        throw new Error(`Failed to fetch initial config. ${err}`)
-    }
-    console.log('Initial Config: ', JSON.stringify(initialConfig))
-    queryParams = initialConfig.labResultsParams
-});
+// fetchConfig(openhimConfig, (err, initialConfig) => {
+//     if (err) {
+//         throw new Error(`Failed to fetch initial config. ${err}`)
+//     }
+//     console.log('Initial Config: ', JSON.stringify(initialConfig))
+//     queryParams = initialConfig.labResultsParams
+// });
 
-emitter.on('error', err => {
-    console.error('Heartbeat failed: ', err)
-});
+// emitter.on('error', err => {
+//     console.error('Heartbeat failed: ', err)
+// });
 
-emitter.on('config', newConfig => {
-    console.log('Received updated config:', JSON.stringify(newConfig))
-    queryParams = newConfig.labResultsParams
-});
+// emitter.on('config', newConfig => {
+//     console.log('Received updated config:', JSON.stringify(newConfig))
+//     queryParams = newConfig.labResultsParams
+// });
 
-function getQueryParameters() { return queryParams }
-module.exports = { getQueryParameters };
+// function getQueryParameters() { return queryParams }
+// module.exports = { getQueryParameters };
 
 
 app.all('*', async(req, res) => {
     // Starts when a new request is triggered by the polling channel
     console.log(`\n---------------------------------------------------------------------------------`,
         `\n${ new Date().toUTCString('en-GB', { timeZone: 'UTC' }) }  - `,
-        `The PTracker ODK CEntral Mediator has received a new request. \n`
+        `The PTracker ODK Central Mediator has received a new request. \n`
     );
     ptrackerData.getPtrackerdata()
         .then((results) => {
@@ -66,7 +66,7 @@ app.all('*', async(req, res) => {
 
 //Server PORT
 db.sequelize.sync().then((req) => {
-    //ptrackerData.getPtrackerdata();
+    ptrackerData.getPtrackerdata()
     app.listen(privateConfig.appConfig.PORT, (err) => {
         if (err) console.log(`Error: ${err}`)
         console.log(`${privateConfig.appConfig.mediatorName}  listening on port ${privateConfig.appConfig.PORT}...  \n`);
