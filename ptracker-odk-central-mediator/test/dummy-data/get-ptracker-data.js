@@ -1,3 +1,74 @@
+const submission_uuid = [
+    "edde9a6e-0890-4808-b587-d95987123522",
+]
+
+const ptracker_id = [
+    "edde9a6e-0890-4808-b587-d95987123522",
+]
+
+const newItem = [{
+    submission_uuid: 'uuid:c226ff64-ff23-412f-9e2f-5f505d19042c',
+    ptracker_id: '10371A190001',
+    facility_code: 10371,
+    facility_name: 'Engela Hospital',
+    type: '1',
+    visit_date: '2021-12-08',
+    visit_date_recorded_odk: '2021-12-08',
+    openmrs_person: null,
+    openmrs_patient: null,
+    facility_uuid: 'hxcCuuBOkC4',
+    given: 'Col',
+    middle: 'Col',
+    family: 'Col',
+    sex: 'F',
+    dob: null,
+    age: 22,
+    country: '1',
+    country_other: null,
+    district: '4',
+    address: null,
+    location: null,
+    phone_number: '08125258',
+    kin_name: null,
+    kin_contact: null,
+    anc_first_hiv_test_status: '0',
+    anc_gravida: null,
+    anc_para: null,
+    anc_edd: null,
+    anc_edd_calculated: null,
+    anc_lnmp: null,
+    next_visit_date: '2021-12-08',
+    next_visit_date_missing: null,
+    next_facility_to_visit: '1',
+    next_facility_to_visit_transfered: null,
+    next_facility_to_visit_transfered_other: null,
+    hiv_test_status: '1',
+    hiv_test_result: '1',
+    art_int_status: '1',
+    anc_art_initation: null,
+    art_int_status_refused_reason: null,
+    art_int_status_refused_reason_missing: null,
+    art_number: null,
+    art_number_missing: '66',
+    art_start_date: '2021-12-08',
+    art_start_date_missing: null,
+    vl_test_done: null,
+    vl_test_date: null,
+    vl_test_date_missing: null,
+    vl_test_result: null,
+    vl_test_result_value: null,
+    vl_test_result_value_missing: null,
+    partner_hivtest_done: '1',
+    partner_hivtest_date: '2021-12-08',
+    partner_hivtest_date_missing: null,
+    partner_hivtest_result: '1',
+    provider_uuid: 'a2f98a7d-5c70-420d-9d1e-b643f4533f13',
+    username: 'jnghaamwa',
+    submission_date: '2021-12-08',
+    review_state: 'rejected'
+}]
+
+
 const tableColumns = {
     submission_uuid: '__id',
     ptracker_id: 'ptracker_id',
@@ -59,5 +130,7 @@ const table_name = 'PNC MOTHER';
 module.exports = {
     tableColumns,
     visit_type,
-    table_name
+    table_name,
+    submission_uuid,
+    ptracker_id
 }

@@ -65,6 +65,11 @@ const tableColumns = {
     review_state: '__system.reviewState'
 }
 
+const visit_type = '4';
+const table_name = 'PNC INFANT';
+
 module.exports = {
-    tableColumns
+    tableColumns,
+    visit_type,
+    table_name
 }

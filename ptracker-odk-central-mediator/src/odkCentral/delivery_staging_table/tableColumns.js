@@ -57,6 +57,11 @@ const tableColumns = {
     review_state: '__system.reviewState'
 }
 
+const visit_type = '2';
+const table_name = 'DEELIVERY';
+
 module.exports = {
-    tableColumns
+    tableColumns,
+    visit_type,
+    table_name
 }

@@ -1,30 +1,77 @@
 const { OdkCentral } = require("./odk-central-api");
 const odkCentral = new OdkCentral();
 const flatten = require('flat');
+const sqlBuilder = require('../db/sql-builder');
 
-function retrieveClientSubmissionDataFromOdkCentral(tableColumns) {
+
+function retrieveSubmissionFromodkCentral(tableColumns, visit_type, table_name) {
     return new Promise((resolve, reject) => {
         odkCentral.getClientSubmissionDataFromOdkCentral()
             .then(async(res) => {
-                try {
-                    let result = JSON.parse(res.body);
-                    if (res.response.statusCode == 200) {
-                        console.log(`Retrived '${result.value.length}' submissions record from ODK Central  ✅\n`);
-                        let cleanedRecords = await loopThroughDataFromOdkCentral(result, tableColumns);
-                        return resolve(cleanedRecords);
-                    } else {
-                        return reject(`Error while retrieving Data from ODK Central 🚫`);
-                    }
-                } catch (error) {
-                    return reject(`Error while retrieving Data from ODK Central: ${error} 🚫\n`)
+                let result = JSON.parse(res.body);
+                if (res.response.statusCode == 200) {
+                    let cleanedRecords = await loopAndMapThroughDataFromOdkCentral(result, tableColumns);
+                    let filteredRecords = cleanedRecords.filter(function(records) { return records.type == visit_type });
+                    console.log(`Retrieving '【${filteredRecords.length}】' 【${table_name}】 submissions record from ODK Central  ✅\n`);
+                    return resolve(filteredRecords);
+                } else {
+                    return reject(`Error while retrieving Data from ODK Central 🚫`);
                 }
             })
-            .catch(err => console.error(err));
+            .catch(err => {
+                console.error(`Error: ${err} \n`);
+                return reject(`Error while retrieving Data from ODK Central: ${err} 🚫\n`)
+            });
     });
 }
 
+function retrieveSubmissionFromOdkCentralRepeatGroups(submission_uuid, tableColumns, table_name) {
+    return new Promise((resolve, reject) => {
+        odkCentral.getClientSubmissionDataFromOdkCentralForRepeatGroups(submission_uuid)
+            .then(async(res) => {
+                let result = JSON.parse(res.body);
+                if (res.response.statusCode == 200) {
+                    let cleanedRecords = await loopAndMapThroughDataFromOdkCentral(result, tableColumns);
+                    console.log(`Retrieving '【${cleanedRecords.length}】'【${table_name}】  submissions record from ODK Central  ✅\n`);
+                    return resolve(cleanedRecords);
+                } else {
+                    return reject(`Error while retrieving repeat group Data from ODK Central 🚫\n`);
+                }
+            })
+            .catch(err => {
+                console.error(`Error: ${err} \n`);
+                return reject(`Error while retrieving repeat group Data from ODK Central: ${err} 🚫\n`)
+            });
+    });
+}
+
+
+async function getDataFromOdkCentralForRepeatGroup(model, tableColumns, visit_type, table_name) {
+    return new Promise(async(resolve, reject) => {
+        let records = await retrieveSubmissionFromodkCentral(tableColumns, visit_type, table_name)
+        if (records.length > 0) {
+            try {
+                records.forEach(async(results) => {
+                    await retrieveSubmissionFromOdkCentralRepeatGroups(results.submission_uuid, tableColumns, table_name)
+                        .then(async(response) => {
+                            response.forEach(async(res) => {
+                                await sqlBuilder.upsertRepeatGroupRecordToMysql(model, res, results.ptracker_id)
+                                await sqlBuilder.upsertRepeatGroupMaintableRecordToMysql(model, results, results.submission_uuid)
+                                return resolve(response);
+                            });
+                        }).catch(err => console.error(err));
+                });
+            } catch (error) {
+                console.error(`Error while retrieving Data from ODK Central: ${error} 🚫\n`)
+            }
+        } else {
+            return reject(`No records retrieved for 【${table_name}】 \n`)
+        }
+    })
+}
+
 //data mapping
-function loopThroughDataFromOdkCentral(records, tableColumns) {
+function loopAndMapThroughDataFromOdkCentral(records, tableColumns) {
     return records.value.map(function(record) {
         let parsedRecord = {};
         let recordtmp = flatten(record);
@@ -35,110 +82,66 @@ function loopThroughDataFromOdkCentral(records, tableColumns) {
     });
 }
 
-//change review state
-async function updateReviewStateFromOdkCentralAndInsertToMysql(model, tableColumns) {
-    return new Promise(async(resolve, reject) => {
-        return await retrieveClientSubmissionDataFromOdkCentral(tableColumns)
-            .then(async(results) => {
-                await getSubmissionsreviewState(results, reviewState)
-                    .then(async() => {
-                        await updateOrCreate(model, results)
-                            .then(res => { return resolve(res) })
-                    }).catch(async() => {
-                        await updateOrCreate(model, results)
-                            .then(res => { return resolve(res) })
-                    })
-            }).catch((err) => {
-                return reject(err)
-            });
-    }).catch(err => console.error(err));
-}
 
-async function getSubmissionsreviewState(results, state) {
-    return new Promise((resolve, reject) => {
+// get submission review state and update to ODK Central
+async function updateReviewStateFromOdkCentralAndInsertToMysql(model, tableColumns, visit_type, table_name) {
+    try {
+        let results = await retrieveSubmissionFromodkCentral(tableColumns, visit_type, table_name)
         results.forEach(async(value) => {
-            if (value.review_state != state || value.review_state == null) {
+            if (value.review_state != reviewState) {
                 console.log(`REVIEW State for: ${value.submission_uuid}  NEEDS to be updated\n`);
-                await updateReviewStateToOdkCentral(results, state)
-                    .then(async() => {
-                        console.log(`REVIEW State for: '${value.submission_uuid}'  UPDATED\n`)
-                    })
-                    .catch(err => console.log(`Error updating review state for: '${value.submission_uuid}' 🚫:\n`, err))
-                return resolve(value);
+                await updateReviewStateToOdkCentral(value, reviewState);
+                return await upsertRecordsToMYSQL(value, model, table_name);
             } else {
                 console.log(`REVIEW state for '${value.submission_uuid}' ALREADY updated !\n`);
-                return reject(value);
+                return await upsertRecordsToMYSQL(value, model, table_name)
             }
         })
-    });
+    } catch (error) {
+        console.error(`Error while updating records: ${error} :🚫:\n`);
+    }
 }
 
-//update review state
+//upsert approved submissions
+async function upsertRecordsToMYSQL(results, model, table_name) {
+    return new Promise(async(resolve, reject) => {
+        if (results) {
+            await sqlBuilder.upsertRecordToMysql(model, results, results.submission_uuid)
+                .then(async(res) => {
+                    console.log(`Succesfully  ✅ UPSERTED records for:'${results.submission_uuid}' in 【${table_name}】 table.\n`)
+                    return resolve(sqlBuilder.updateReviewStateToMysql(model, results.submission_uuid));
+                }).catch(err => { console.log(`Error while upserting record for 【${table_name}】: ${err} :🚫:\n`) });
+        } else {
+            return reject(`No records retrieved for 【${table_name}】 \n`);
+        }
+    })
+}
+
+
+//update review state to odk central
 async function updateReviewStateToOdkCentral(records, state) {
     return new Promise((resolve, reject) => {
-        records.forEach(async(record) => {
-            odkCentral.updateSubmissionReviewState(record.submission_uuid, state)
-                .then(response => {
-                    if (response.response.statusCode == 200) {
-                        return resolve(response);
-                    } else {
-                        return reject(`Error updating review state for '${record.submission_uuid}' ! 🚫\n`);
-                    }
-                }).catch(err => {
-                    return reject(`Could not review state. \nError: ${err}🚫`);
-                })
-        });
+        odkCentral.updateSubmissionReviewState(records.submission_uuid, state)
+            .then(response => {
+                if (response.response.statusCode == 200) {
+                    console.log(`REVIEW State for: '${records.submission_uuid}'  UPDATED\n`)
+                    return resolve(response);
+                } else {
+                    return reject(`Error updating review state for '${records.submission_uuid}' ! 🚫\n`);
+                }
+            }).catch(err => {
+                console.error(`Error: ${err} \n`);
+                return reject(`Could not review state.: ${err}🚫 \n`);
+            })
     });
 };
 
-//get submission uuid
-async function getSubmissionUuid(record) {
-    return new Promise((resolve, reject) => {
-        if (record) {
-            var vals = [];
-            record.forEach(uuid => {
-                vals.push(uuid.submission_uuid);
-            });
-            return resolve(vals);
-        } else { return reject(`No record to extract submission_uuid 🚫\n`); }
-    });
-}
-
-// upsert record into MYSQL
-async function updateOrCreate(model, newItem) {
-    let submission_uuid = await getSubmissionUuid(newItem);
-    return model
-        .findOne({ where: { submission_uuid: submission_uuid } })
-        .then(function(foundItem) {
-            if (!foundItem) {
-                // Item not found, create a new one
-                return model
-                    .bulkCreate(newItem)
-                    .then(function(item) { return { item: item, created: true }; })
-            }
-            // Found an item, update it
-            return model
-                .update(newItem, { where: { submission_uuid: submission_uuid } })
-                .then(function(item) { return { item: item, created: false } });
-        }).catch(err => console.error(err));
-}
-
-// upsert record review state into MYSQL
-async function updateOrCreatereviewState(model, newItem) {
-    let submission_uuid = await getSubmissionUuid(newItem);
-    return model
-        .findAll({ where: { submission_uuid: submission_uuid } })
-        .then(function() {
-            return model
-                .update({ review_state: 'received' }, { where: { submission_uuid: submission_uuid } })
-                .then(function(item) { return { item: item, created: false } });
-        })
-}
-
 module.exports = {
-    retrieveClientSubmissionDataFromOdkCentral,
-    loopThroughDataFromOdkCentral,
+    retrieveSubmissionFromodkCentral,
+    loopAndMapThroughDataFromOdkCentral,
     updateReviewStateFromOdkCentralAndInsertToMysql,
     updateReviewStateToOdkCentral,
-    updateOrCreate
+    retrieveSubmissionFromOdkCentralRepeatGroups,
+    updateReviewStateFromOdkCentralAndInsertToMysql,
+    getDataFromOdkCentralForRepeatGroup
 };

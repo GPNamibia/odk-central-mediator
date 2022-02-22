@@ -35,6 +35,25 @@ class OdkCentral {
 
     }
 
+    getClientSubmissionDataFromOdkCentralForRepeatGroups(submission_uuid) {
+        if (submission_uuid) {
+            let options = {
+                method: 'GET',
+                url: config.apiURL + `.svc/Submissions('${submission_uuid}')/ld/infant`,
+                qs: {},
+                headers: config.headers,
+                form: false,
+                auth: {
+                    user: config.username,
+                    pass: config.password
+                }
+            }
+            return this.sendRequest(options)
+        } else {
+            return Promise.reject(`- Cannot retrive infant without submission uuid.\n`)
+        }
+    }
+
     updateSubmissionReviewState(submission_uuid, review_state) {
         if (submission_uuid) {
             let options = {
@@ -54,6 +73,8 @@ class OdkCentral {
             }
             return this.sendRequest(options)
 
+        } else {
+            return Promise.reject(`- Cannot update review state without submission uuid and review state.\n`)
         }
     }
 }

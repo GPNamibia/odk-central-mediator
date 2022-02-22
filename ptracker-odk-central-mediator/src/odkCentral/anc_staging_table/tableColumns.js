@@ -65,7 +65,11 @@ const tableColumns = {
 }
 
 global.reviewState = "approved";
+const visit_type = '1';
+const table_name = 'ANC';
 
 module.exports = {
-    tableColumns
+    tableColumns,
+    visit_type,
+    table_name,
 }

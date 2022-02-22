@@ -1,9 +1,9 @@
 module.exports = (sequelize, DataTypes) => {
     const stag_odk_pnc_mother = sequelize.define("stag_odk_pnc_mother", {
         submission_uuid: {
-            type: DataTypes.TEXT,
+            type: DataTypes.STRING,
+            unique: true,
             allowNull: false,
-            // primaryKey: true,
             validate: {
                 notEmpty: true
             }

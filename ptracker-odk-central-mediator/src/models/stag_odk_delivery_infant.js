@@ -1,16 +1,15 @@
 module.exports = (sequelize, DataTypes) => {
     const stag_odk_delivery_infant = sequelize.define("stag_odk_delivery_infant", {
-        submission_uuid: {
-            type: DataTypes.TEXT,
+        Submissions_id: {
+            type: DataTypes.STRING,
             allowNull: false,
-            // primaryKey: true,
             validate: {
                 notEmpty: true
             }
         },
         ptracker_id: {
-            type: DataTypes.TEXT,
-            allowNull: false,
+            type: DataTypes.STRING,
+            allowNull: true,
             validate: {
                 notEmpty: true
             }
@@ -36,41 +35,6 @@ module.exports = (sequelize, DataTypes) => {
                 notEmpty: true
             }
         },
-        visit_date: {
-            type: DataTypes.TEXT,
-            allowNull: true,
-            validate: {
-                notEmpty: true
-            }
-        },
-        visit_date_recorded_odk: {
-            type: DataTypes.TEXT,
-            allowNull: true,
-            validate: {
-                notEmpty: true
-            }
-        },
-        openmrs_id: {
-            type: DataTypes.TEXT,
-            allowNull: true,
-            validate: {
-                notEmpty: true
-            }
-        },
-        openmrs_person_uuid: {
-            type: DataTypes.TEXT,
-            allowNull: true,
-            validate: {
-                notEmpty: true
-            }
-        },
-        openmrs_patient_uuid: {
-            type: DataTypes.TEXT,
-            allowNull: true,
-            validate: {
-                notEmpty: true
-            }
-        },
         facility_uuid: {
             type: DataTypes.TEXT,
             allowNull: true,
@@ -78,120 +42,84 @@ module.exports = (sequelize, DataTypes) => {
                 notEmpty: true
             }
         },
-        odk_uuid: {
-            type: DataTypes.TEXT,
-            allowNull: true,
-            validate: {
-                notEmpty: true
-            }
-        },
-        given: {
-            type: DataTypes.TEXT,
-            allowNull: true,
-            validate: {
-                notEmpty: true
-            }
-        },
-        middle: {
-            type: DataTypes.TEXT,
-            allowNull: true,
-            validate: {
-                notEmpty: true
-            }
-        },
-        family: {
-            type: DataTypes.TEXT,
-            allowNull: true,
-            validate: {
-                notEmpty: true
-            }
-        },
-        sex: {
-            type: DataTypes.TEXT,
-            allowNull: true,
-            validate: {
-                notEmpty: true
-            }
-        },
-        dob: {
-            type: DataTypes.TEXT,
-            allowNull: true,
-            validate: {
-                notEmpty: true
-            }
-        },
-        age: {
-            type: DataTypes.TEXT,
-            allowNull: true,
-            validate: {
-                notEmpty: true
-            }
-        },
-        country: {
-            type: DataTypes.TEXT,
-            allowNull: true,
-            validate: {
-                notEmpty: true
-            }
-        },
-        country_other: {
-            type: DataTypes.TEXT,
-            allowNull: true,
-            validate: {
-                notEmpty: true
-            }
-        },
-        district: {
-            type: DataTypes.TEXT,
-            allowNull: true,
-            validate: {
-                notEmpty: true
-            }
-        },
-        ptracker_id: {
-            type: DataTypes.TEXT,
-            allowNull: true,
-            validate: {
-                notEmpty: true
-            }
-        },
-        address: {
-            type: DataTypes.TEXT,
-            allowNull: true,
-            validate: {
-                notEmpty: true
-            }
-        },
-        location: {
-            type: DataTypes.TEXT,
-            allowNull: true,
-            validate: {
-                notEmpty: true
-            }
-        },
-        phone_number: {
-            type: DataTypes.TEXT,
-            allowNull: true,
-            validate: {
-                notEmpty: true
-            }
-        },
-        kin_name: {
-            type: DataTypes.TEXT,
-            allowNull: true,
-            validate: {
-                notEmpty: true
-            }
-        },
-        kin_contact: {
-            type: DataTypes.TEXT,
-            allowNull: true,
-            validate: {
-                notEmpty: true
-            }
-        },
         // INFANT L&D PART 
-
+        infant_ptracker_id: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+            validate: {
+                notEmpty: true
+            }
+        },
+        infant_status: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+            validate: {
+                notEmpty: true
+            }
+        },
+        infant_sex: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+            validate: {
+                notEmpty: true
+            }
+        },
+        infant_dob: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+            validate: {
+                notEmpty: true
+            }
+        },
+        infant_stillbirth: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+            validate: {
+                notEmpty: true
+            }
+        },
+        infant_feeding: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+            validate: {
+                notEmpty: true
+            }
+        },
+        infant_dod: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+            validate: {
+                notEmpty: true
+            }
+        },
+        infant_dod_missing: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+            validate: {
+                notEmpty: true
+            }
+        },
+        infant_arv_status: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+            validate: {
+                notEmpty: true
+            }
+        },
+        infant_arv_reason_for_refusal: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+            validate: {
+                notEmpty: true
+            }
+        },
+        infant_arv_reason_for_refusal_missing: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+            validate: {
+                notEmpty: true
+            }
+        },
         // MISC
         provider_uuid: {
             type: DataTypes.TEXT,

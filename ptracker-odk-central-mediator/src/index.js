@@ -1,10 +1,8 @@
 const express = require("express");
-const { authenticate } = require('./config/authentication.js');
 const ptrackerData = require('./odkCentral/odk-central.js');
 const privateConfig = require('./config/private-config.json');
 const mediatorConfig = require('./config/mediator-config.json')
 const db = require('./models');
-const cron = require("node-cron");
 const app = express();
 
 // OpenHIM
@@ -61,11 +59,11 @@ app.all('*', async(req, res) => {
                 console.error(`Error retrieving PTracker Data from ODK Central: ${error}`)
             }
 
-        }).catch(error => { console.log(`Error retrieving PTracker Data: ${error}`) })
+        }).catch(error => { console.error(`Error retrieving PTracker Data: ${error}`) })
 });
 
 //Server PORT
-db.sequelize.sync().then((req) => {
+db.sequelize.sync({}).then((req) => {
     app.listen(privateConfig.appConfig.PORT, (err) => {
         if (err) console.log(`Error: ${err}`)
         console.log(`${privateConfig.appConfig.mediatorName}  listening on port ${privateConfig.appConfig.PORT}...  \n`);
