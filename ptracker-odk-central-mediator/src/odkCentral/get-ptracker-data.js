@@ -19,7 +19,6 @@ function retrieveSubmissionFromodkCentral(table_colums, visit_type, table_name) 
                 }
             })
             .catch(err => {
-                console.error(`Error: ${err} \n`);
                 return reject(`Error while retrieving Data from ODK Central: ${err} 🚫\n`)
             });
     });
@@ -39,7 +38,6 @@ function retrieveSubmissionFromOdkCentralRepeatGroups(submission_uuid, table_col
                 }
             })
             .catch(err => {
-                //console.error(`Error: ${err} \n`);
                 return reject(`Error while retrieving repeat group Data from ODK Central: ${err} 🚫\n`)
             });
     });

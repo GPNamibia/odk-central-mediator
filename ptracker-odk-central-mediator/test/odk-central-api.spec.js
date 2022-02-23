@@ -50,10 +50,10 @@ describe(`OdkCentral API  Function:: getClientSubmissionDataFromOdkCentral()`, (
 
     it(`should return an error response when a parameter is passed`, (done) => {
         const getStub = sandbox.stub(OdkCentral.prototype, 'sendRequest')
-            .resolves({ response: { statusCode: 200 }, body: error_response_1 })
+            .resolves({ response: { statusCode: 404 }, body: error_response_1 })
         OdkCentral.prototype.getClientSubmissionDataFromOdkCentral('uuid')
             .then((result) => {
-                expect(result.response.statusCode).to.be.eq(200);
+                expect(result.response.statusCode).to.be.eq(404);
                 let res = result.body;
                 expect(res.length).to.be.eq();
                 expect(getStub).to.have.been.calledOnce;
@@ -133,10 +133,10 @@ describe(`OdkCentral API  Function:: updateSubmissionReviewState()`, () => {
 
     it(`should return an erro response when invalid uuid is passed`, (done) => {
         const getStub = sandbox.stub(OdkCentral.prototype, 'sendRequest')
-            .resolves({ response: { statusCode: 200 }, body: error_response_1 })
+            .resolves({ response: { statusCode: 400 }, body: error_response_1 })
         OdkCentral.prototype.updateSubmissionReviewState(submission_uuid.invalid_uuid, review_state)
             .then((result) => {
-                expect(result.response.statusCode).to.be.eq(200);
+                expect(result.response.statusCode).to.be.eq(400);
                 let res = result.body;
                 expect(res.length).to.be.eq();
                 expect(getStub).to.have.been.calledOnce;
@@ -147,10 +147,10 @@ describe(`OdkCentral API  Function:: updateSubmissionReviewState()`, () => {
 
     it(`should return an erro response when invalid review state is passed`, (done) => {
         const getStub = sandbox.stub(OdkCentral.prototype, 'sendRequest')
-            .resolves({ response: { statusCode: 200 }, body: error_response_1 })
+            .resolves({ response: { statusCode: 404 }, body: error_response_1 })
         OdkCentral.prototype.updateSubmissionReviewState(submission_uuid.valid_uuid, review_state.invalid_reviewState)
             .then((result) => {
-                expect(result.response.statusCode).to.be.eq(200);
+                expect(result.response.statusCode).to.be.eq(404);
                 let res = result.body;
                 expect(res.length).to.be.eq();
                 expect(getStub).to.have.been.calledOnce;

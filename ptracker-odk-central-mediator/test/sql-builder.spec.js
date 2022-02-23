@@ -90,45 +90,6 @@ describe(`Sequalize Builder Function: updateReviewStateToMysql()`, () => {
     })
 });
 
-describe(`Sequalize Builder Function: upsertRepeatGroupMaintableRecordToMysql()`, () => {
-    const sandbox = sinon.createSandbox();
-    afterEach(() => { sandbox.restore() });
-
-    it(`should return a success message of true if the item is created or updated`, () => {
-        const getStub = sandbox.stub(sqlBuilder, 'upsertRepeatGroupMaintableRecordToMysql')
-            .resolves(true)
-        sqlBuilder.upsertRepeatGroupMaintableRecordToMysql(stag_odk_anc, newItem, submission_uuid)
-            .then((result) => {
-                expect(result).to.be.equal(true);
-                expect(getStub).to.have.been.calledOnce;
-                done();
-            })
-            .catch();
-    })
-
-    it(`should return an error message if any of the parameters are missing or undefined`, () => {
-        const getStub = sandbox.stub(sqlBuilder, 'upsertRepeatGroupMaintableRecordToMysql')
-            .resolves()
-        sqlBuilder.upsertRepeatGroupMaintableRecordToMysql(stag_odk_anc, newItem)
-            .catch(error => {
-                expect(error).to.be.equal('- Cannot upsert record without submission uuid.\n');
-                expect(getStub).to.have.not.been.called;
-                done();
-            });
-    })
-
-    it(`should return an error message if no parameters are passed`, () => {
-        const getStub = sandbox.stub(sqlBuilder, 'upsertRepeatGroupMaintableRecordToMysql')
-            .resolves()
-        sqlBuilder.upsertRepeatGroupMaintableRecordToMysql()
-            .catch(error => {
-                expect(error).to.be.equal('- Error while updating records.\n');
-                expect(getStub).to.have.not.been.called;
-                done();
-            });
-    })
-});
-
 describe(`Sequalize Builder Function: upsertRepeatGroupRecordToMysql()`, () => {
     const sandbox = sinon.createSandbox();
     afterEach(() => { sandbox.restore() });

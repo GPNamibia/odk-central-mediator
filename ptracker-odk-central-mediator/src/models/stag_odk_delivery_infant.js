@@ -163,6 +163,20 @@ module.exports = (sequelize, DataTypes) => {
             validate: {
                 notEmpty: true
             }
+        },
+        odk_central_error_message: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+            validate: {
+                notEmpty: true
+            }
+        },
+        openmrs_error_message: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+            validate: {
+                notEmpty: true
+            }
         }
     });
 

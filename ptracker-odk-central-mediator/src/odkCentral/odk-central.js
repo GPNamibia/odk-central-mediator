@@ -6,7 +6,7 @@ const stag_odk_pnc_mother = require('./pnc_mother_staging_table/stag_odk_pnc_mot
 
 
 async function getPtrackerdata() {
-    return new Promise(async(resolve) => {
+    return new Promise(async(resolve, reject) => {
         try {
             await stag_odk_anc.getAncSubmissionData()
                 .then(async(res) => {
@@ -38,7 +38,7 @@ async function getPtrackerdata() {
                 })
                 .catch((err) => { console.error(err) })
         } catch (error) {
-            console.log(`Error while retrieving data`, error)
+            reject(`Error while retrieving data:${error} :🚫\n`)
         }
     }).catch(err => console.error(err));
 }
