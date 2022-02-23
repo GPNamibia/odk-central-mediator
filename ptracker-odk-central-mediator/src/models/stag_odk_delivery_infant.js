@@ -1,5 +1,13 @@
 module.exports = (sequelize, DataTypes) => {
     const stag_odk_delivery_infant = sequelize.define("stag_odk_delivery_infant", {
+        infant_id: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true,
+            validate: {
+                notEmpty: true
+            }
+        },
         Submissions_id: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -143,6 +151,13 @@ module.exports = (sequelize, DataTypes) => {
             }
         },
         review_state: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+            validate: {
+                notEmpty: true
+            }
+        },
+        openmrs_status: {
             type: DataTypes.TEXT,
             allowNull: true,
             validate: {

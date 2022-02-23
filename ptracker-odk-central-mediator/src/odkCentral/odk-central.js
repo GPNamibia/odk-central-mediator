@@ -6,40 +6,41 @@ const stag_odk_pnc_mother = require('./pnc_mother_staging_table/stag_odk_pnc_mot
 
 
 async function getPtrackerdata() {
-    try {
-        await stag_odk_anc.getAncSubmissionData()
-            .then(async(res) => {
-                return res;
-            })
-            .catch((err) => { console.error(err) })
+    return new Promise(async(resolve) => {
+        try {
+            await stag_odk_anc.getAncSubmissionData()
+                .then(async(res) => {
+                    return resolve();
+                })
+                .catch((err) => { console.error(err) })
 
-        await stag_odk_delivery.getDeliverySubmissionData()
-            .then(async(res) => {
-                return res;
-            })
-            .catch((err) => { console.error(err) })
+            await stag_odk_delivery.getDeliverySubmissionData()
+                .then(async(res) => {
+                    return resolve();
+                })
+                .catch((err) => { console.error(err) })
 
-        await stag_odk_delivery_infant.getDeliveryInfantSubmissionData()
-            .then(async(res) => {
-                return res;
-            })
-            .catch((err) => { console.error(err) })
+            await stag_odk_delivery_infant.getDeliveryInfantSubmissionData()
+                .then(async(res) => {
+                    return resolve();
+                })
+                .catch((err) => { console.error(err) })
 
-        await stag_odk_pnc_mother.getPncMotherSubmissionData()
-            .then(async(res) => {
-                return res;
-            })
-            .catch((err) => { console.error(err) })
+            await stag_odk_pnc_mother.getPncMotherSubmissionData()
+                .then(async(res) => {
+                    return resolve();
+                })
+                .catch((err) => { console.error(err) })
 
-        await stag_odk_pnc_infant.getPncInfantSubmissionData()
-            .then(async(res) => {
-                return res;
-            })
-            .catch((err) => { console.error(err) })
-
-    } catch (error) {
-        console.log(`Error while retrieving data`, error)
-    }
+            await stag_odk_pnc_infant.getPncInfantSubmissionData()
+                .then(async(res) => {
+                    return resolve();
+                })
+                .catch((err) => { console.error(err) })
+        } catch (error) {
+            console.log(`Error while retrieving data`, error)
+        }
+    }).catch(err => console.error(err));
 }
 
 module.exports = {

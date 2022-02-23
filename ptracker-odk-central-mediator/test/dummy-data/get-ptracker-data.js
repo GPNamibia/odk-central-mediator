@@ -1,6 +1,6 @@
-const submission_uuid = [
-    "edde9a6e-0890-4808-b587-d95987123522",
-]
+const submission_uuid = {
+    "uuid": "edde9a6e-0890-4808-b587-d95987123522"
+}
 
 const ptracker_id = [
     "edde9a6e-0890-4808-b587-d95987123522",

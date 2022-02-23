@@ -4,13 +4,13 @@ const flatten = require('flat');
 const sqlBuilder = require('../db/sql-builder');
 
 
-function retrieveSubmissionFromodkCentral(tableColumns, visit_type, table_name) {
+function retrieveSubmissionFromodkCentral(table_colums, visit_type, table_name) {
     return new Promise((resolve, reject) => {
         odkCentral.getClientSubmissionDataFromOdkCentral()
             .then(async(res) => {
                 let result = JSON.parse(res.body);
                 if (res.response.statusCode == 200) {
-                    let cleanedRecords = await loopAndMapThroughDataFromOdkCentral(result, tableColumns);
+                    let cleanedRecords = await loopAndMapThroughDataFromOdkCentral(result, table_colums);
                     let filteredRecords = cleanedRecords.filter(function(records) { return records.type == visit_type });
                     console.log(`Retrieving '【${filteredRecords.length}】' 【${table_name}】 submissions record from ODK Central  ✅\n`);
                     return resolve(filteredRecords);
@@ -25,13 +25,13 @@ function retrieveSubmissionFromodkCentral(tableColumns, visit_type, table_name) 
     });
 }
 
-function retrieveSubmissionFromOdkCentralRepeatGroups(submission_uuid, tableColumns, table_name) {
+function retrieveSubmissionFromOdkCentralRepeatGroups(submission_uuid, table_colums, table_name) {
     return new Promise((resolve, reject) => {
         odkCentral.getClientSubmissionDataFromOdkCentralForRepeatGroups(submission_uuid)
             .then(async(res) => {
                 let result = JSON.parse(res.body);
                 if (res.response.statusCode == 200) {
-                    let cleanedRecords = await loopAndMapThroughDataFromOdkCentral(result, tableColumns);
+                    let cleanedRecords = await loopAndMapThroughDataFromOdkCentral(result, table_colums);
                     console.log(`Retrieving '【${cleanedRecords.length}】'【${table_name}】  submissions record from ODK Central  ✅\n`);
                     return resolve(cleanedRecords);
                 } else {
@@ -39,24 +39,26 @@ function retrieveSubmissionFromOdkCentralRepeatGroups(submission_uuid, tableColu
                 }
             })
             .catch(err => {
-                console.error(`Error: ${err} \n`);
+                //console.error(`Error: ${err} \n`);
                 return reject(`Error while retrieving repeat group Data from ODK Central: ${err} 🚫\n`)
             });
     });
 }
 
 
-async function getDataFromOdkCentralForRepeatGroup(model, tableColumns, visit_type, table_name) {
+async function getDataFromOdkCentralForRepeatGroup(model, table_colums, visit_type, table_name) {
     return new Promise(async(resolve, reject) => {
-        let records = await retrieveSubmissionFromodkCentral(tableColumns, visit_type, table_name)
+        let records = await retrieveSubmissionFromodkCentral(table_colums, visit_type, table_name)
         if (records.length > 0) {
             try {
                 records.forEach(async(results) => {
-                    await retrieveSubmissionFromOdkCentralRepeatGroups(results.submission_uuid, tableColumns, table_name)
+                    await retrieveSubmissionFromOdkCentralRepeatGroups(results.submission_uuid, table_colums, table_name)
                         .then(async(response) => {
                             response.forEach(async(res) => {
-                                await sqlBuilder.upsertRepeatGroupRecordToMysql(model, res, results.ptracker_id)
-                                await sqlBuilder.upsertRepeatGroupMaintableRecordToMysql(model, results, results.submission_uuid)
+                                delete results.infant_id;
+                                delete results.submission_uuid;
+                                await sqlBuilder.upsertRepeatGroupRecordToMysql(model, res, res.infant_id)
+                                await sqlBuilder.upsertRepeatGroupRecordToMysql(model, results, res.infant_id);
                                 return resolve(response);
                             });
                         }).catch(err => console.error(err));
@@ -71,12 +73,12 @@ async function getDataFromOdkCentralForRepeatGroup(model, tableColumns, visit_ty
 }
 
 //data mapping
-function loopAndMapThroughDataFromOdkCentral(records, tableColumns) {
+function loopAndMapThroughDataFromOdkCentral(records, table_colums) {
     return records.value.map(function(record) {
         let parsedRecord = {};
         let recordtmp = flatten(record);
-        Object.keys(tableColumns).map(key => {
-            parsedRecord[key] = recordtmp[tableColumns[key]];
+        Object.keys(table_colums).map(key => {
+            parsedRecord[key] = recordtmp[table_colums[key]];
         });
         return parsedRecord;
     });
@@ -84,9 +86,9 @@ function loopAndMapThroughDataFromOdkCentral(records, tableColumns) {
 
 
 // get submission review state and update to ODK Central
-async function updateReviewStateFromOdkCentralAndInsertToMysql(model, tableColumns, visit_type, table_name) {
+async function updateReviewStateFromOdkCentralAndInsertToMysql(model, table_colums, visit_type, table_name) {
     try {
-        let results = await retrieveSubmissionFromodkCentral(tableColumns, visit_type, table_name)
+        let results = await retrieveSubmissionFromodkCentral(table_colums, visit_type, table_name)
         results.forEach(async(value) => {
             if (value.review_state != reviewState) {
                 console.log(`REVIEW State for: ${value.submission_uuid}  NEEDS to be updated\n`);
@@ -143,5 +145,6 @@ module.exports = {
     updateReviewStateToOdkCentral,
     retrieveSubmissionFromOdkCentralRepeatGroups,
     updateReviewStateFromOdkCentralAndInsertToMysql,
-    getDataFromOdkCentralForRepeatGroup
+    getDataFromOdkCentralForRepeatGroup,
+    upsertRecordsToMYSQL,
 };

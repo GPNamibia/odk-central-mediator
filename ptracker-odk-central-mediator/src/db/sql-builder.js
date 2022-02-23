@@ -18,31 +18,19 @@ async function updateReviewStateToMysql(model, submission_uuid) {
     }
 }
 
-// upsert record into for repeat group based on Submissions_id  MYSQL
-async function upsertRepeatGroupMaintableRecordToMysql(model, newItem, submission_uuid) {
-    const foundItem = await model.findOne({ where: { Submissions_id: submission_uuid } })
-    if (!foundItem) {
-        return await model.create(newItem)
-            .then((item) => { return { item, created: true } })
-    }
-    const item = await model.update(newItem, { where: { Submissions_id: submission_uuid } })
-    return { item, created: false }
-}
-
 // upsert record into for repeat group based on ptracker_id  MYSQL
-async function upsertRepeatGroupRecordToMysql(model, newItem, ptracker_id) {
-    const foundItem = await model.findOne({ where: { ptracker_id: ptracker_id } })
+async function upsertRepeatGroupRecordToMysql(model, newItem, infant_id) {
+    const foundItem = await model.findOne({ where: { infant_id: infant_id } })
     if (!foundItem) {
         return await model.create(newItem)
             .then((item) => { return { item, created: true } })
     }
-    const item = await model.update(newItem, { where: { ptracker_id: ptracker_id } })
+    const item = await model.update(newItem, { where: { infant_id: infant_id } })
     return { item, created: false }
 }
 
 module.exports = {
     upsertRecordToMysql,
     updateReviewStateToMysql,
-    upsertRepeatGroupMaintableRecordToMysql,
     upsertRepeatGroupRecordToMysql
 }

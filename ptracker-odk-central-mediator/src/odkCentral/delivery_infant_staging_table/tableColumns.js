@@ -1,5 +1,6 @@
 const tableColumns = {
     submission_uuid: '__id',
+    infant_id: '__id',
     Submissions_id: '__Submissions-id',
     ptracker_id: 'ptracker_id',
     facility_code: 'facility',
