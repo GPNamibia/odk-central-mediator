@@ -1,5 +1,4 @@
 --CREATING ANC STAGING TABLE--
-DROP TABLE IF EXISTS `stag_odk_anc`;
 
 CREATE TABLE stag_odk_delivery_infant(
   `submission_uuid` varchar(255)  NOT NULL PRIMARY KEY,

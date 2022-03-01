@@ -1,6 +1,5 @@
 
 --CREATING  LABOUR & DELIVERY STAGING TABLE--
-DROP TABLE IF EXISTS `stag_odk_pnc_mother`;
 
 CREATE TABLE stag_odk_delivery(
   `submission_uuid` varchar(255)  NOT NULL PRIMARY KEY,

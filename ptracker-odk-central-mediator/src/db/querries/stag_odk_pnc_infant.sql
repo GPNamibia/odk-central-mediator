@@ -1,6 +1,5 @@
 
 --CREATING INFANT PNC STAGING TABLE--
-DROP TABLE IF EXISTS `stag_odk_pnc_infant`;
 
 CREATE TABLE stag_odk_pnc_infant(
 
