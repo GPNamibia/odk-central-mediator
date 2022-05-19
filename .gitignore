@@ -7,6 +7,7 @@
 ptracker-odk-central-mediator/src/config/private-config.json
 node_modules/
 dist/
+.vscode/
 
 # Compiled Java class files
 *.class
