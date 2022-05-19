@@ -24,7 +24,7 @@ const tableColumns = {
     kin_name: 'client_info.client_contact.grpkinname.kin_name',
     kin_contact: 'client_info.client_contact.grpkincontact.kin_contact',
     // anc part
-    anc_first_hiv_test_status: 'first_visit',
+    anc_first_visit: 'first_visit',
     anc_gravida: 'anc.gravidagrp.gravida',
     anc_para: 'anc.paragrp.para',
     anc_edd: 'edd_manual',

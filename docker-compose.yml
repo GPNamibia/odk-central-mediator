@@ -7,7 +7,7 @@ services:
       - "mongo-db:/data/db"
       - "mongo-config-db:/data/configdb"
     ports:
-      - "127.0.0.1:27017:27017"
+      - "127.0.0.1:27016:27017"
     image: mongo:3.4
 
   core:

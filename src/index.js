@@ -6,7 +6,7 @@ const db = require('./models');
 const app = express();
 
 //openHIM
-getQueryParameters();
+//getQueryParameters();
 
 app.all('*', async(req, res) => {
     // Starts when a new request is triggered by the polling channel
