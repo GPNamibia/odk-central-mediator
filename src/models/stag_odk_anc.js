@@ -191,7 +191,7 @@ module.exports = (sequelize, DataTypes) => {
             }
         },
         // anc part -- 
-        anc_first_hiv_test_status: {
+        anc_first_visit: {
             type: DataTypes.TEXT,
             allowNull: true,
             validate: {
