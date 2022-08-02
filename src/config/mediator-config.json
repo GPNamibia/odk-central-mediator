@@ -1,0 +1,30 @@
+{
+    "urn": "urn:mediator:odkcentral",
+    "version": "1.0.0",
+    "name": "ODK Central Mediatorr",
+    "description": "This mediator is intended for retrieving submission data from ODK Central, and storing the data into the MySQL Repository.",
+    "defaultChannelConfig": [{
+        "name": "ODK Central Mediator",
+        "urlPattern": "^/ptracker_odk_central_mediator$",
+        "routes": [{
+            "name": "ODK Central Mediator Route",
+            "host": "ptracker_odk_central_mediator",
+            "path": "/",
+            "port": "4000",
+            "primary": true,
+            "type": "http"
+        }],
+        "allow": ["admin"],
+        "methods": ["GET", "PATCH"],
+        "type": "http"
+    }],
+    "endpoints": [{
+        "name": "ODK Central Mediator Endpoint",
+        "host": "ptracker_odk_central_mediator",
+        "path": "/",
+        "port": "4000",
+        "primary": false,
+        "type": "http"
+    }],
+    "configDefs": []
+}

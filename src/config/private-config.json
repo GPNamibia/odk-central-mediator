@@ -1,0 +1,55 @@
+{
+    "appConfig": {
+        "PORT": 4000,
+        "mediatorName": "PTracker ODK Mediator"
+    },
+    "development": {
+        "username": "root",
+        "password": "",
+        "database": "",
+        "host": "mysql-repo",
+        "dialect": "mysql",
+        "define": {
+            "timestamps": true,
+            "freezeTableName": true
+        },
+        "logging": false,
+        "port": 3306
+    },
+    "test": {
+        "username": "root",
+        "password": "",
+        "database": "",
+        "host": "127.0.0.1",
+        "dialect": "mysql",
+        "port": 3306
+    },
+    "production": {
+        "username": "root",
+        "password": "",
+        "database": "",
+        "host": "127.0.0.1",
+        "dialect": "mysql",
+        "port": 3306
+    },
+    "openhimConfig": {
+        "username": "",
+        "password": "",
+        "apiURL": "https://namibia-hie-auth.globalhealthapp.net"
+    },
+    "authConfig": {
+        "name": "",
+        "password": ""
+    },
+    "odkCentralConfig": {
+        "username": "",
+        "password": "",
+        "apiURL": "https://ptracker-odk.globalhealthapp.net/v1/projects/1/forms/PTK_2020_10",
+        "headers": {
+            "Postman-Token": "",
+            "cache-control": "no-cache",
+            "Content-Type": "text/csv",
+            "apikey": ""
+        }
+    }
+}

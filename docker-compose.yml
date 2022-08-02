@@ -1,0 +1,74 @@
+version: '3'
+services:
+  mongo:
+    container_name: openhim-mongo
+    restart: unless-stopped
+    volumes:
+      - "mongo-db:/data/db"
+      - "mongo-config-db:/data/configdb"
+    ports:
+      - "127.0.0.1:27016:27017"
+    image: mongo:3.4
+
+  core:
+    container_name: openhim-core
+    image: jembi/openhim-core
+    restart: unless-stopped
+    environment:
+      - mongo_url=mongodb://mongo/openhim
+      - mongo_atnaUrl=mongodb://mongo/openhim
+    ports:
+      - "127.0.0.1:8080:8080"
+      - "127.0.0.1:5000:5000"
+      - "127.0.0.1:5001:5001"
+      - "127.0.0.1:5050:5050"
+      - "127.0.0.1:5051:5051"
+      - "127.0.0.1:5052:5052"
+      - "127.0.0.1:7788:7788"
+    healthcheck:
+      test: "curl -sSk https://openhim-core:8080/heartbeat || exit 1"
+      interval: 30s
+      timeout: 30s
+      retries: 3
+    depends_on:
+      - mongo
+
+  console:
+    container_name: openhim-console
+    image: jembi/openhim-console
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:9000:80"
+    healthcheck:
+      test: "curl -sS http://openhim-console || exit 1"
+      interval: 30s
+      timeout: 30s
+      retries: 3
+    # volumes:
+    #   - ./default.json:/usr/share/nginx/html/config/default.json
+  mysql-db:
+    container_name: mysql-repo
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+    restart: always
+    ports:
+      - "127.0.0.1:3307:3306"
+
+  ptracker-odk-central-mediator:
+    container_name: ptracker_odk_central_mediator
+    build:
+      ./ptracker-odk-central-mediator
+    ports:
+      - "127.0.0.1:4000:4000"
+    restart: unless-stopped
+
+volumes:
+  mongo-db:
+  mongo-config-db:
+networks:
+  default:
+    name: openHIM
+    external: true
+      
