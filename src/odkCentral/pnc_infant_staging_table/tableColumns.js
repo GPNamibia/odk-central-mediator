@@ -58,6 +58,7 @@ const tableColumns = {
     art_number_missing: 'infantpnc.grpinfantart.infant_art_number_missing.',
     infant_date_death: 'infantpnc.grpinfantdeathdate.infant_date_death',
     infant_date_death_mising: 'infantpnc.grpinfantdeathdate.infant_date_death_missing',
+    parent_ptracker_id:'infantpnc.id_parent',
     // MISC
     provider_uuid: 'mrs_openmrs_user_uuid',
     username: 'ptracker_username',
