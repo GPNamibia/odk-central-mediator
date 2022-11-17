@@ -1,4 +1,4 @@
-# PTracker ODK Central Mediator
+# OpenHIM NodeJS ODK Central Mediator
 This mediator is intended for retrieving submission data from ODK Central and  storing the data into the MySQL Repository.
 
 # Private Configurations
